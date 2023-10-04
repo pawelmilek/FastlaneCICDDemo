@@ -44,8 +44,8 @@ playground.xcworkspace
 # https://docs.fastlane.tools/best-practices/source-control/#source-control
 
 fastlane/.env.secret
+fastlane/test_output
+fastlane/lint_output
 fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots/**/*.png
-fastlane/test_output
-fastlane/lint_output
