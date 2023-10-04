@@ -1,0 +1,42 @@
+name: Build Beta
+
+on:
+    # push:  check tag .release
+      branches:
+        - main
+    workflow_dispatch:
+  
+  concurrency:
+    group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+    cancel-in-progress: true
+
+    jobs:
+      test:
+        name: "Run build"
+        runs-on: macos-latest
+    
+        steps:
+          - name: "Checkout"
+            uses: actions/checkout@v4
+    
+          - name: "Setup Xcode version"
+            uses: maxim-lobanov/setup-xcode@v1
+            with:
+              xcode-version: latest
+    
+          - name: Setup Ruby environment
+            uses: ruby/setup-ruby@v1
+            with:
+              ruby-version: "3.2"
+              bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+                
+          - name: "Displays Xcode current version"
+            run: sudo xcode-select -p
+
+          - name: "Build and distribute to TestFlight"
+          # run bundle exec fastlane build_beta
+          # env:
+          #   FL_SWIFTLINT_STRICT: ${{ secrets.FL_SWIFTLINT_STRICT }}
+          #   FL_SWIFTLINT_IGNORE_EXIT_STATUS: ${{ secrets.FL_SWIFTLINT_IGNORE_EXIT_STATUS }}
+          #   FL_SWIFTLINT_RAISE_IF_SWIFTLINT_ERROR: ${{ secrets.FL_SWIFTLINT_RAISE_IF_SWIFTLINT_ERROR }}
+          #   SLACK_URL: ${{ secrets.SLACK_URL }}

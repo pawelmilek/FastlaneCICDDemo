@@ -1,0 +1,152 @@
+# This will stop uploading the information which actions were run
+opt_out_usage
+
+fastlane_version "2.2"
+fastlane_require "dotenv"
+
+default_platform(:ios)
+
+platform :ios do
+  before_all do |lane|
+    Dotenv.load ".env.secret"
+    UI.important "Loaded env.secret"
+  end
+
+  desc "Step 1. Create a app on Develop Portal and App Store Connect" ## DONE
+  desc "Step 2. Create certificates and Provisioning Profiles"
+  desc "Step 3. Test the app"                                         ## DONE
+  desc "Step 4. Build and codesign"
+  desc "Step 5. Submit binaries to the App Store Connect"
+
+  desc "Create the app on App Store Connect and Apple Developer portal"
+  lane :create_app do
+    version = get_version_number
+    UI.important "Version number: #{version}"
+    produce(app_version: version)
+  end
+
+  desc "Create Certificates and Provisioning Profiles"
+  lane :signinig do
+  end
+
+  desc "Check code quality by reviewing its testability"
+  lane :check_code_quality do
+    setup_ci if ENV["CI"]
+    lint
+    test
+    on_success("Success! Code quality check passed.")
+  end
+
+  desc "Checking code style and conventions report to #{ENV["FL_SWIFTLINT_OUTPUT_FILE"]}"
+  lane :lint do
+    swiftlint
+  end
+
+  desc "Running tests, returns code covarage report to #{ENV["SCAN_OUTPUT_DIRECTORY"]}"
+  lane :test do
+    scan
+  end
+
+  desc "Deploying a new prduction version to AppStore"
+  lane :build_release do
+    load_appstore_connect_api_token()
+    build(release: true)
+    # Deploy to the AppStore
+    on_success("Success! A new prduction version is available on the AppStore")
+  end
+
+  desc "Deploying a new beta version to TestFlight"
+  lane :build_beta do
+    load_appstore_connect_api_token()
+    build(beta: true)
+    # Distribute to testers via TestFlight
+    # upload_to_testflight(skip_waiting_for_build_processing: true)
+    on_success("Success! A new beta version is available on the TestFlight")
+  end
+
+  desc "Build relese or beta version of the app"
+  lane :build do |options|
+    build_config = (options[:release] ? "Release" : "Beta")
+    UI.important "Lane is creating #{build_config} build"
+  
+    setup_ci if ENV["CI"] # It creates temporary keychain. Without this, the build could freeze and never finish.
+  
+    build_number = get_build_number
+    UI.message "BUILD_NUMBER: #{lane_context[SharedValues::BUILD_NUMBER]}"
+  
+    if options[:release]
+      # Build release
+      UI.message "Build release"
+    else
+      # Build debug
+      UI.message "Build beta"
+    end
+  end
+
+  desc "Execute when error an occurs in any of the block, lane"
+  error do |lane, exception|
+    version = get_version
+    slack(
+      message: "Failure! Error during line execution.",
+      success: false,
+      attachment_properties: {
+        fields: [
+          {
+            title: "Version",
+            value: version,
+          },
+          {
+            title: "Error Info",
+            value: exception.to_s,
+            short: false,
+          },
+          {
+            title: "Stacktrace",
+            value: exception.backtrace,
+            short: false,
+          },
+        ],
+      },
+    )
+  end
+
+  desc "UI message log examples"
+  lane :message_logs do
+    UI.header "Displays a message in a box for emphasis"
+    UI.verbose "Displays verbose output in the default output color"
+    UI.message "Neutral message (usually white)"
+    UI.success "Successfully finished processing (usually green)"
+    UI.error "Wahaha, what's going on here! (usually red)"
+    UI.important "Make sure to use Windows (usually yellow)"
+  end
+end
+
+## Methods definitions
+def load_appstore_connect_api_token
+  api_key = app_store_connect_api_key
+  UI.success lane_context[SharedValues::APP_STORE_CONNECT_API_KEY]
+end
+
+def on_success(message)
+  version = get_version
+
+  slack(
+    message: message,
+    success: true,
+    default_payloads: [:lane, :git_branch, :last_git_commit, :last_git_commit_hash, :git_author],
+    attachment_properties: {
+      fields: [
+        {
+          title: "Version",
+          value: version,
+        },
+      ],
+    },
+  )
+end
+
+def get_version
+  version_number = get_version_number
+  build_number = get_build_number
+  version = "#{version_number} (#{build_number})"
+end
