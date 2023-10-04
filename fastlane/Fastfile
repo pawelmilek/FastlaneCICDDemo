@@ -12,9 +12,9 @@ platform :ios do
     UI.important "Loaded env.secret"
   end
 
-  desc "Step 1. Create a app on Develop Portal and App Store Connect" ## DONE
+  # desc "Step 1. Create a app on Develop Portal and App Store Connect" ## DONE
   desc "Step 2. Create certificates and Provisioning Profiles"
-  desc "Step 3. Test the app"                                         ## DONE
+  # desc "Step 3. Test the app"                                         ## DONE
   desc "Step 4. Build and codesign"
   desc "Step 5. Submit binaries to the App Store Connect"
 
