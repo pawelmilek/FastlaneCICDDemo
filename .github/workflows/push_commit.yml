@@ -36,7 +36,4 @@ jobs:
       - name: Run lint, build and test application
         run: bundle exec fastlane lint
         env:
-          FL_SWIFTLINT_STRICT: ${{ vars.FL_SWIFTLINT_STRICT }}
-          FL_SWIFTLINT_IGNORE_EXIT_STATUS: ${{ vars.FL_SWIFTLINT_IGNORE_EXIT_STATUS }}
-          FL_SWIFTLINT_RAISE_IF_SWIFTLINT_ERROR: ${{ vars.FL_SWIFTLINT_RAISE_IF_SWIFTLINT_ERROR }}
           SLACK_URL: ${{ secrets.SLACK_URL }}
