@@ -34,7 +34,7 @@ jobs:
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
 
       - name: Run lint, build and test application
-        run: bundle exec fastlane check_code_quality
+        run: bundle exec fastlane lint
         env:
           FL_SWIFTLINT_STRICT: ${{ vars.FL_SWIFTLINT_STRICT }}
           FL_SWIFTLINT_IGNORE_EXIT_STATUS: ${{ vars.FL_SWIFTLINT_IGNORE_EXIT_STATUS }}

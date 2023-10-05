@@ -21,11 +21,7 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 [bundle exec] fastlane ios create_app
 ```
 
-Step 1. Create a app on Develop Portal and App Store Connect
-
 Step 2. Create certificates and Provisioning Profiles
-
-Step 3. Test the app
 
 Step 4. Build and codesign
 
@@ -55,7 +51,7 @@ Check code quality by reviewing its testability
 [bundle exec] fastlane ios lint
 ```
 
-Checking code style and conventions report to ./fastlane/lint_output/swiftlint.result.html
+Checking code style and conventions report to 
 
 ### ios test
 
