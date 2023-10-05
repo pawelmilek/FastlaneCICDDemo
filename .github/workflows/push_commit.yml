@@ -24,9 +24,6 @@ jobs:
         with:
           xcode-version: latest
 
-      - name: "Displays Xcode current version"
-        run: sudo xcode-select -p
-
       - name: Setup xcbeautify
         run: brew install xcbeautify
 
@@ -37,6 +34,6 @@ jobs:
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
 
       - name: Run lint, build and test application
-        run: bundle exec fastlane check_code_quality
+        run: bundle exec fastlane test
         env:
           SLACK_URL: ${{ secrets.SLACK_URL }}

@@ -19,18 +19,18 @@ platform :ios do
   desc "Step 5. Submit binaries to the App Store Connect"
 
   desc "Create the app on App Store Connect and Apple Developer portal"
-  lane :create_app do
+  lane :create do
     version = get_version_number
     UI.important "Version number: #{version}"
     produce(app_version: version)
   end
 
   desc "Create Certificates and Provisioning Profiles"
-  lane :signinig do
+  lane :sign do
   end
 
   desc "Check code quality by reviewing its testability"
-  lane :check_code_quality do
+  lane :quality_check do
     setup_ci if ENV["CI"]
     lint
     test
