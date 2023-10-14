@@ -15,10 +15,10 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 ## iOS
 
-### ios create_app
+### ios create
 
 ```sh
-[bundle exec] fastlane ios create_app
+[bundle exec] fastlane ios create
 ```
 
 Step 2. Create certificates and Provisioning Profiles
@@ -29,18 +29,18 @@ Step 5. Submit binaries to the App Store Connect
 
 Create the app on App Store Connect and Apple Developer portal
 
-### ios signinig
+### ios sign
 
 ```sh
-[bundle exec] fastlane ios signinig
+[bundle exec] fastlane ios sign
 ```
 
 Create Certificates and Provisioning Profiles
 
-### ios check_code_quality
+### ios quality_check
 
 ```sh
-[bundle exec] fastlane ios check_code_quality
+[bundle exec] fastlane ios quality_check
 ```
 
 Check code quality by reviewing its testability
@@ -59,7 +59,7 @@ Checking code style and conventions report to
 [bundle exec] fastlane ios test
 ```
 
-Running tests, returns code covarage report to ./fastlane/test_output
+Running tests, returns code covarage report to 
 
 ### ios build_release
 
